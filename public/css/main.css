@@ -1,0 +1,50 @@
+.headerText{
+    font-family: "Times New Roman", Times, serif;
+    font-weight: bold;
+}
+.hide{
+    display: none;
+}
+.userListSection{
+    border-radius: 10px; 
+    background-color: rgb(201, 196, 196);
+    text-align: center;
+}
+.messageSection .Send{
+    float: right;
+}
+.well{
+    border: 1px solid grey;
+    background-color: rgb(228, 228, 228);
+    text-align: right;
+    margin: 2px 2px 10px 2px;
+    padding: 3px;
+    border-radius: 10px;
+}
+#content{
+    height: 350px;
+    overflow-y:scroll;
+}
+.listUser{
+    border: 1px solid grey;
+    border-radius: 10px;
+    margin: 0px 0px 10px 0px;
+    list-style: none;
+    background-color: white;
+}
+a{
+    cursor: pointer;  
+}
+.contentHead{
+    border: 1px solid grey;
+    border-radius: 8px;
+    background-color: green;
+    color: white;
+    font-weight: bold;
+}
+.leftFloat{
+    text-align: left;
+}
+.rightFloat{
+    text-align: right;
+}

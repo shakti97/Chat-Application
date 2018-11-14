@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Chat Application</title>
+    <link rel="stylesheet" href="./bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/main.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.js"></script>
+    <script>
+        window.addEventListener('load', () => {
+            messages = [];
+            var socket = io.connect();
+            var message = document.getElementById('message');
+            var content = document.getElementById('content');
+            var messageForm=document.getElementById('messageForm');
+            var userForm=document.getElementById('userForm');
+            var userName=document.getElementById('username');
+            var mainSection=document.getElementById('mainSection');
+            var userList=document.getElementById('userList');
+            var userLogin=document.getElementById('userLogin');
+            var contentHead=document.getElementById('contentHead');
+            messageForm.addEventListener('submit',function messageSubmit(e){
+                e.preventDefault();
+                console.log('message received',message.value);
+                socket.emit('send message',message.value)
+                message.value='';
+            });
+            userForm.addEventListener('submit',function UserLogin(e){
+                e.preventDefault();
+                var data=userName.value;
+                userLogin.classList.add('hide');
+                mainSection.classList.remove('hide');
+                console.log(mainSection.classList);
+                socket.emit('userLogin',data);
+                userName.value='';
+            })
+            socket.on('new message',(data)=>{
+                var div=document.createElement('div');
+                div.innerHTML=data.msg ;
+                div.setAttribute('class','well');
+                content.appendChild(div);
+            })
+            socket.on('useradded',(data)=>{
+                console.log("data receivced",data);
+                userList.innerHTML='';
+                
+                for(let i=0;i<data.length;i++){
+                    let anchorTag=document.createElement('a');
+                    let div=document.createElement('li');
+                    div.innerHTML=data[i];
+                    console.log(div);
+                    div.setAttribute('class','listUser');
+                    anchorTag.appendChild(div);
+                    anchorTag.onclick=selectUser;
+                    console.log(anchorTag);
+                    userList.appendChild(anchorTag);
+                    console.log(userList);
+                    // document.querySelectorAll('.selection').onclick(socket.emit('userSelected',data[i]))
+                }
+            })
+            function selectUser(e){
+                //    alert('userSelected');
+                   console.log(e.target);
+                   console.log(e.srcElement.innerHTML)
+                   userdata=e.srcElement.innerHTML;
+                   contentHead.innerHTML=userdata;
+                   contentHead.setAttribute('class','contentHead');
+                   socket.emit('userSelected',userdata,()=>{
+                       console.log('emitted task');
+                   })
+                }
+            socket.on('content',data=>{
+                content.innerHTML='';
+                console.log('data',data);
+                let div1 = document.createElement('div');
+                let div2 = document.createElement('div');
+                div1.innerHTML=data.msgSnt;
+                div2.innerHTML=data.msgRcd;
+                div1.setAttribute('class','rightFloat');
+                div2.setAttribute('class','leftFloat');
+                content.appendChild(div1);
+                content.appendChild(div2);
+            })
+            
+        });
+    </script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="jumbotron">
+            <h2 class="headerText">Chat Application</h2>
+        </div>
+        <div class="userLogin row" id="userLogin">
+            <div class="col-md-12">
+                <form id='userForm' >
+                    <div class="form-group">
+                        <input type="text" class="form-control" id="username"><br>
+                        <input type="submit" class="btn btn-primary" value="Login" >
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="mainSection row hide" id="mainSection">
+            <div class="userListSection col-md-4">
+                <h3>User Available</h3>
+                <ul id='userList'></ul>
+            </div>
+            <div class="messageSection col-md-8">
+                <form id="messageForm" >
+                    <div class="form-group">
+                        <div id="contentHead" class=""></div>
+                        <div id="content"></div>
+                        <textarea name="message" id="message" class="form-control"></textarea>
+                        <br>
+                        <input  id="send" class="btn btn-primary Send" type="submit" value="Send Message" ></input>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

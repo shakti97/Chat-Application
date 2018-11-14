@@ -1,0 +1,17 @@
+{
+  "name": "public",
+  "authors": [
+    "shakti97 <30585570+shakti97@users.noreply.github.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
