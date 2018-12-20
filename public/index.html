@@ -76,8 +76,14 @@
                 console.log('data',data);
                 let div1 = document.createElement('div');
                 let div2 = document.createElement('div');
-                div1.innerHTML=data.msgSnt;
-                div2.innerHTML=data.msgRcd;
+                data.msgSnt.forEach((msg)=>{
+                    div1.innerHTML+=msg[0];
+                });
+                data.msgRcd.forEach((msg)=>{
+                    div2.innerHTML+=msg[0];
+                })
+                // div1.innerHTML=data.msgSnt;
+                // div2.innerHTML=data.msgRcd;
                 div1.setAttribute('class','rightFloat');
                 div2.setAttribute('class','leftFloat');
                 content.appendChild(div1);

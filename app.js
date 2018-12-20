@@ -3,6 +3,7 @@ const app =express();
 const http = require('http');
 const server = http.createServer(app);
 const io = require('socket.io').listen(server);
+var currentdate = new Date(); 
 server.listen(process.env.PORT || 80,(err)=>{
     if(err){
         console.log('Error in port config');
@@ -38,7 +39,7 @@ io.sockets.on('connection',(socket)=>{
     });
     socket.on('send message',(data)=>{
         console.log('msg typed',data);
-        console.log('slectedUser sending  to ',selectedUser);
+        console.log('slectedUser sending to ',selectedUser);
         var sender;
         socketIDStore.forEach((userData)=>{
             if(userData.userId==socket.id){
@@ -46,7 +47,9 @@ io.sockets.on('connection',(socket)=>{
                 console.log('Name of the sender '+sender); 
                 userData.friendList.forEach((SendingTo)=>{
                     if(SendingTo.friendName==selectedUser){    //searching for the friend whom sending msg
-                        SendingTo.msgSent.push(data);            //pushing the msgSent in the friend conversation
+                        SendingTo.msgSent.push([data,currentdate.getHours() + ":"  
+                        + currentdate.getMinutes() + ":" 
+                        + currentdate.getSeconds()]);            //pushing the msgSent in the friend conversation
                         console.log('data pushed in the msg Sent ',SendingTo.msgSent);
                     }
                 })
@@ -61,7 +64,9 @@ io.sockets.on('connection',(socket)=>{
                 userData.friendList.forEach((ReceivingFrom)=>{
                     console.log('friendName',ReceivingFrom.friendName);
                     if(ReceivingFrom.friendName==sender){            //searching for the friend converstion
-                        ReceivingFrom.msgRcd.push(data);                  //pushing the msgRcd in the conversation
+                        ReceivingFrom.msgRcd.push([data,currentdate.getHours() + ":"  
+                        + currentdate.getMinutes() + ":" 
+                        + currentdate.getSeconds()]);                  //pushing the msgRcd in the conversation
                         console.log('data pushed in the msg recd ',ReceivingFrom.msgRcd);
                     }
                 })
@@ -119,15 +124,15 @@ io.sockets.on('connection',(socket)=>{
             socketIDStore[j].friendList.forEach((friend)=>{   //check the friend from friendList
                 if(friend.friendName==name){
                 let msgRcd = friend.msgRcd;                        //retrive those message which r Rcd from the Friend
-                let msgSnt = friend.msgSent;                       //retrive those messafe which r send to the friend
-                data={ 'msgRcd' : msgRcd , 'msgSnt' : msgSnt};      
-               
-                
+                let msgSnt = friend.msgSent; 
+                let TotalConv = [...msgRcd , ...msgSnt]  
+                console.log('before sorting ',TotalConv);                   //retrive those messafe which r send to the friend
+                TotalConv.sort((a,b)=>{return a[1]>b[1]})
+                console.log('Total Convere ',TotalConv);
+                data={ 'msgRcd' : msgRcd , 'msgSnt' : msgSnt};
             }             
             })
                 // console.log('i m inside the idStore');
-            
-                
             }
             console.log('Selected friend '+name +' data emitted ', data);
             io.to(socket.id).emit('content',data);
