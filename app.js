@@ -3,7 +3,7 @@ const app =express();
 const http = require('http');
 const server = http.createServer(app);
 const io = require('socket.io').listen(server);
-var currentdate = new Date(); 
+
 server.listen(process.env.PORT || 80,(err)=>{
     if(err){
         console.log('Error in port config');
@@ -44,7 +44,8 @@ io.sockets.on('connection',(socket)=>{
         socketIDStore.forEach((userData)=>{
             if(userData.userId==socket.id){
                 sender=userData.userName;             //retrive the name of the sender
-                console.log('Name of the sender '+sender); 
+                console.log('Name of the sender '+sender);
+                let currentdate = new Date(); 
                 userData.friendList.forEach((SendingTo)=>{
                     if(SendingTo.friendName==selectedUser){    //searching for the friend whom sending msg
                         SendingTo.msgSent.push([data,currentdate.getHours() + ":"  
@@ -61,6 +62,7 @@ io.sockets.on('connection',(socket)=>{
             if(userData.userName==selectedUser){
                 console.log('sender',sender);
                 console.log(userData);
+                let currentdate = new Date();
                 userData.friendList.forEach((ReceivingFrom)=>{
                     console.log('friendName',ReceivingFrom.friendName);
                     if(ReceivingFrom.friendName==sender){            //searching for the friend converstion
@@ -129,7 +131,7 @@ io.sockets.on('connection',(socket)=>{
                 console.log('before sorting ',TotalConv);                   //retrive those messafe which r send to the friend
                 TotalConv.sort((a,b)=>{return a[1]>b[1]})
                 console.log('Total Convere ',TotalConv);
-                data={ 'msgRcd' : msgRcd , 'msgSnt' : msgSnt};
+                data={ 'msgRcd' : msgRcd , 'msgSnt' : msgSnt , 'TotalConv' : TotalConv};
             }             
             })
                 // console.log('i m inside the idStore');
