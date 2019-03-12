@@ -118,7 +118,7 @@ io.sockets.on('connection',(socket)=>{
     }
     socket.on('userSelected',(name)=>{
         console.log('userMsg Shown');
-        console.log('nME OF THE SOCKET',socket.id);             //socket.id of the socket from where the event is fired
+        console.log('name OF THE SOCKET',socket.id);             //socket.id of the socket from where the event is fired
         var data;
         for(let j=0;j<socketIDStore.length;j++){
             if(socketIDStore[j].userName==name){
